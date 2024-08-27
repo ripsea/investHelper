@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports: # 系統port:本機port, 可多組設定
+      - "5100:5100"
+      # - "5005:5000"
+    volumes: # 每次開啟都是全新的，但如果想保留資料時使用
+      # : 之前的是實體位置，之後的是 container 內的位置。
+      - .:/usr/src/app
+      # - '~/Desktop/mount-mongo-data:/data/db'

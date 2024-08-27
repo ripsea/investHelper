@@ -1,0 +1,14 @@
+flask
+flask-smorest
+python-dotenv
+requests
+selenium
+webdriver_manager
+beautifulsoup4
+marshmallow
+sqlalchemy
+flask-sqlalchemy
+flask-jwt-extended
+passlib
+flask-migrate
+gunicorn
