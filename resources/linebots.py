@@ -24,7 +24,7 @@ handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 # 監聽所有來自 /callback 的 Post Request
 @blp.route("/linebot/callback")
 class Linebot(MethodView):
-    def get(self):
+    def post(self):
         # get X-Line-Signature header value
         signature = request.headers["X-Line-Signature"]
         # get request body as text
