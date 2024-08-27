@@ -9,7 +9,7 @@ import models
 from blocklist import BLOCKLIST
 from db import db
 from resources.item import blp as ItemBlueprint
-from resources.linebot import blp as LinebotBlueprint
+from resources.linebots import blp as LinebotBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint

@@ -1,6 +1,9 @@
 version: '3'
 services:
-  web:
+  python-container:
+    image: invest-helper:latest
+    env_file:
+      - .env
     build: .
     ports: # 系統port:本機port, 可多組設定
       - "5100:5100"
