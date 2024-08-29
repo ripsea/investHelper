@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, abort, request
+from flask import Flask, abort, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt, jwt_required
 from flask_smorest import Blueprint, abort
@@ -14,16 +14,26 @@ from db import db
 
 blp = Blueprint("Linebots", __name__, description="Operations on linebots")
 
-
+line_bot_userid = LineBotApi(os.getenv("LINEBOT_UserID"))
 # Channel Access Token
 line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
 # Channel Secret
 handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 
 
+@blp.route("/linebot/send")
+def get():
+    # line_bot_api.push_message(
+    #     line_bot_userid, TextSendMessage(text="Hello World!!!")
+    # )
+    profile = line_bot_api.get_profile("")
+    print(profile.display_name)
+    print(profile.user_id)
+
+
 # 監聽所有來自 /callback 的 Post Request
 @blp.route("/linebot/callback")
-class Linebot(MethodView):
+class LinebotCallback(MethodView):
     def post(self):
         # get X-Line-Signature header value
         signature = request.headers["X-Line-Signature"]
