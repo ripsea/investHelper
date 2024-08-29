@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, abort, request
+from flask import Flask, abort, jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt, jwt_required
 from flask_smorest import Blueprint, abort
@@ -22,15 +22,13 @@ handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 
 
 @blp.route("/linebot/send")
-class LinebotSend(MethodView):
-    def post(self):
-        try:
-            line_bot_api.push_message(
-                line_bot_userid, TextSendMessage(text="Hello World!!!")
-            )
-            return "OK"
-        except:
-            print("error")
+def get():
+    # line_bot_api.push_message(
+    #     line_bot_userid, TextSendMessage(text="Hello World!!!")
+    # )
+    profile = line_bot_api.get_profile("")
+    print(profile.display_name)
+    print(profile.user_id)
 
 
 # 監聽所有來自 /callback 的 Post Request
