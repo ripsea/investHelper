@@ -14,16 +14,28 @@ from db import db
 
 blp = Blueprint("Linebots", __name__, description="Operations on linebots")
 
-
+line_bot_userid = LineBotApi(os.getenv("LINEBOT_UserID"))
 # Channel Access Token
 line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
 # Channel Secret
 handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 
 
+@blp.route("/linebot/send")
+class LinebotSend(MethodView):
+    def post(self):
+        try:
+            line_bot_api.push_message(
+                line_bot_userid, TextSendMessage(text="Hello World!!!")
+            )
+            return "OK"
+        except:
+            print("error")
+
+
 # 監聽所有來自 /callback 的 Post Request
 @blp.route("/linebot/callback")
-class Linebot(MethodView):
+class LinebotCallback(MethodView):
     def post(self):
         # get X-Line-Signature header value
         signature = request.headers["X-Line-Signature"]
