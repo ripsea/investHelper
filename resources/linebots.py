@@ -23,6 +23,7 @@ handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 @blp.route("/linebot/send")
 def get():
     line_bot_api.push_message(line_bot_userid, TextSendMessage(text="Hello World!!!"))
+    return "ok"
 
 
 # 監聽所有來自 /callback 的 Post Request
