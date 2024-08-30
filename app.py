@@ -1,9 +1,16 @@
+import os
 import secrets
 
+from dotenv import load_dotenv
+
+load_dotenv()
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_smorest import Api
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 import models
 from blocklist import BLOCKLIST
@@ -13,6 +20,10 @@ from resources.linebots import blp as LinebotBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
+
+# line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
+# line_bot_userid = os.getenv("LINEBOT_UserID")
+# line_bot_api.push_message(line_bot_userid, TextSendMessage(text="Hello World!!!"))
 
 
 def create_app(db_url=None):

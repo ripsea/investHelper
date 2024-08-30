@@ -13,12 +13,16 @@ from sqlalchemy.exc import SQLAlchemyError
 from db import db
 
 blp = Blueprint("Linebots", __name__, description="Operations on linebots")
-
-line_bot_userid = LineBotApi(os.getenv("LINEBOT_UserID"))
+line_bot_userid = os.getenv("LINEBOT_UserID")
 # Channel Access Token
 line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
 # Channel Secret
 handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
+
+
+@blp.route("/linebot/send")
+def get():
+    line_bot_api.push_message(line_bot_userid, TextSendMessage(text="Hello World!!!"))
 
 
 # 監聽所有來自 /callback 的 Post Request
