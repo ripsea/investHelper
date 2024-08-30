@@ -21,16 +21,6 @@ line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
 handler = WebhookHandler(os.getenv("LINEBOT_ChannelSecret"))
 
 
-@blp.route("/linebot/send")
-def get():
-    # line_bot_api.push_message(
-    #     line_bot_userid, TextSendMessage(text="Hello World!!!")
-    # )
-    profile = line_bot_api.get_profile("")
-    print(profile.display_name)
-    print(profile.user_id)
-
-
 # 監聽所有來自 /callback 的 Post Request
 @blp.route("/linebot/callback")
 class LinebotCallback(MethodView):
