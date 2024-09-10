@@ -4,6 +4,14 @@ import secrets
 from dotenv import load_dotenv
 
 load_dotenv()
+# line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
+# line_bot_userid = os.getenv("LINEBOT_UserID")
+# line_bot_api.push_message(line_bot_userid, TextSendMessage(text="Hello World!!!"))
+import time
+from datetime import datetime
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
@@ -21,10 +29,6 @@ from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
 
-# line_bot_api = LineBotApi(os.getenv("LINEBOT_ChannelAccessToken"))
-# line_bot_userid = os.getenv("LINEBOT_UserID")
-# line_bot_api.push_message(line_bot_userid, TextSendMessage(text="Hello World!!!"))
-
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -39,6 +43,21 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "sqlite:///data.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
+
+    scheduler = BackgroundScheduler()
+
+    def job():
+        print("Scheduled job executed")
+
+    scheduler.add_job(job, "interval", seconds=1)
+
+    @app.before_request
+    def start_scheduler():
+        scheduler.start()
+
+    @app.teardown_appcontext
+    def stop_scheduler(exception=None):
+        scheduler.shutdown()
 
     db.init_app(app)
     migrate = Migrate(app, db)
