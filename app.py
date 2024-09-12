@@ -1,6 +1,3 @@
-import os
-import secrets
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,11 +20,18 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import models
 from blocklist import BLOCKLIST
 from db import db
+from resources.accessment import GetAccessment
+from resources.accessment import blp as Accessmentprint
 from resources.item import blp as ItemBlueprint
 from resources.linebots import blp as LinebotBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
+
+# apscheduler先用local不要用docker測試
+# wait to do...apscheduler, it seams work, maybe docker is too slow
+# selenium.common.exceptions.WebDriverException: Message: Service /root/.cache/selenium/chromedriver/linux64/128.0.6613.137/chromedriver unexpectedly exited. Status code was: 127
+# https://www.youtube.com/watch?v=b49Y3NGJX68
 
 
 def create_app(db_url=None):
@@ -44,16 +48,12 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PROPAGATE_EXCEPTIONS"] = True
 
-    scheduler = BackgroundScheduler()
+    scheduler = BlockingScheduler()
 
     def job():
-        print("Scheduled job executed")
+        GetAccessment()
 
-    scheduler.add_job(job, "interval", seconds=1)
-
-    @app.before_request
-    def start_scheduler():
-        scheduler.start()
+    scheduler.add_job(job, "interval", seconds=60)
 
     @app.teardown_appcontext
     def stop_scheduler(exception=None):
@@ -104,14 +104,18 @@ def create_app(db_url=None):
             401,
         )
 
-    # replaced by Flask_Migrate, or using it when use SQLAlchemy
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        #     db.create_all() # replaced by Flask_Migrate, or using it when use SQLAlchemy
+        scheduler.start()
 
     api.register_blueprint(ItemBlueprint)
     api.register_blueprint(StoreBlueprint)
     api.register_blueprint(TagBlueprint)
     api.register_blueprint(UserBlueprint)
     api.register_blueprint(LinebotBlueprint)
+    api.register_blueprint(Accessmentprint)
 
     return app
+
+
+create_app()
